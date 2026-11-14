@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,18 +12,37 @@ h1{margin:0;color:#ffca55;font-size:clamp(26px,5vw,42px);letter-spacing:5px;text
 header p{margin:5px;color:#c9b9e8;font-size:11px}
 #wrap{width:min(1000px,100%);margin:auto;padding:10px}
 canvas{width:100%;height:auto;display:block;border:3px solid #a78bfa;background:#17152b;image-rendering:pixelated;touch-action:none}
-#status{min-height:25px;color:#ffdb79;margin:8px}
-button{background:#633ca2;color:white;border:2px solid #c9a5ff;padding:11px 15px;margin:4px;font-family:monospace;font-weight:bold;border-radius:5px}
+#status{min-height:25px;color:#ffdb79;margin:8px;font-weight:bold;font-size:14px}
+button{background:#633ca2;color:white;border:2px solid #c9a5ff;padding:11px 15px;margin:4px;font-family:monospace;font-weight:bold;border-radius:5px;cursor:pointer}
 button:active{background:#a36bea}
 .controls{display:flex;justify-content:center;flex-wrap:wrap;gap:4px}
 .controls button{min-width:62px;min-height:48px;touch-action:none;user-select:none}
 .small{font-size:11px;color:#c9b9e8;line-height:1.8}
+
+/* Python Lab Review Panel Styling (Added below original game UI) */
+.python-lab{margin-top:16px;padding:14px;background:#19142b;border:2px solid #80e39b;border-radius:8px;text-align:left}
+.python-lab h2{margin:0 0 8px 0;color:#80e39b;font-size:16px;text-align:center;letter-spacing:1px}
+.py-btn-row{display:flex;justify-content:center;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.py-btn{background:#1b4d3e;border:2px solid #80e39b;color:#eafff2;padding:8px 12px;font-size:12px;border-radius:5px}
+.py-btn:hover{background:#276e58}
+.py-code-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.py-card{background:#100d20;border:1px solid #453769;border-radius:6px;padding:10px}
+.py-card-title{color:#ffca55;font-weight:bold;font-size:12px;margin-bottom:6px;border-bottom:1px solid #2d2346;padding-bottom:4px}
+.py-card pre{margin:0;font-size:11px;line-height:1.45;color:#d6deeb;overflow-x:auto}
+.kw{color:#c792ea;font-weight:bold}
+.fn{color:#82aaff}
+.str{color:#ecc48d}
+.num{color:#f78c6c}
+.cm{color:#7fdbca;font-style:italic}
 </style>
+<!-- [TEACHER SETUP 1] Load Brython so the browser can run real Python code -->
+<script src="https://cdn.jsdelivr.net/npm/brython@3.12.0/brython.min.js"></script>
 </head>
-<body>
+<!-- [TEACHER SETUP 2] Start Brython when the page loads -->
+<body onload="brython()">
 <header>
 <h1>SHOOTING KYOMA</h1>
-<p>PIXEL ARCADE SHOOTER · VERSION 2.0</p>
+<p>PIXEL ARCADE SHOOTER · VERSION 2.0 (PYTHON LAB EDITION)</p>
 </header>
 <div id="wrap">
 <canvas id="game" width="960" height="540"></canvas>
@@ -34,7 +52,8 @@ button:active{background:#a36bea}
 <button id="restart">RESTART</button>
 <div class="small">
 KEYBOARD: A/D OR ARROWS = MOVE · W/SPACE = JUMP · J = SHOOT<br>
-K = BOMB · Q = CHANGE WEAPON · E = PICK UP · SHIFT = SPECIAL
+K = BOMB · Q = CHANGE WEAPON · E = PICK UP · SHIFT = SPECIAL<br>
+<span style="color:#80e39b;font-weight:bold;">PYTHON KEYS: H = HEAL · U = SUPER PISTOL · B = +5 BOMBS · M = +500 SCORE</span>
 </div>
 <div class="controls">
 <button data-key="a">◀</button>
@@ -47,6 +66,51 @@ K = BOMB · Q = CHANGE WEAPON · E = PICK UP · SHIFT = SPECIAL
 <button data-key="shift">SPECIAL</button>
 </div>
 <div class="small" id="controller">CONTROLLER: SEARCHING...</div>
+
+<!-- INTERACTIVE PYTHON LAB PANEL FOR TEACHER & STUDENT REVIEW -->
+<div class="python-lab">
+ <h2>🐍 KYOMA'S PYTHON LAB (TEST & REVIEW)</h2>
+ <div class="py-btn-row">
+  <button class="py-btn" id="py-heal-btn">🐍 Run heal_kyoma() [Key: H]</button>
+  <button class="py-btn" id="py-upgrade-btn">🐍 Run upgrade_pistol() [Key: U]</button>
+  <button class="py-btn" id="py-bomb-btn">🐍 Run add_bombs() [Key: B]</button>
+  <button class="py-btn" id="py-score-btn">🐍 Run mega_score() [Key: M]</button>
+ </div>
+ <div class="py-code-grid">
+  <div class="py-card">
+   <div class="py-card-title">Mission 1: Heal (if / else)</div>
+   <pre><span class="kw">def</span> <span class="fn">heal_kyoma</span>():
+    p = window.game.player
+    <span class="kw">if</span> p.hp &lt; p.maxHp:
+        p.hp = <span class="num">100</span>
+    <span class="kw">else</span>:
+        <span class="cm"># Already full HP!</span></pre>
+  </div>
+  <div class="py-card">
+   <div class="py-card-title">Mission 2: Weapon Mod</div>
+   <pre><span class="kw">def</span> <span class="fn">upgrade_pistol</span>():
+    pistol = window.game.weapons[<span class="num">0</span>]
+    pistol.name = <span class="str">"PYTHON LASER"</span>
+    pistol.damage = <span class="num">45</span>
+    pistol.rate = <span class="num">6</span>
+    pistol.color = <span class="str">"#80e39b"</span></pre>
+  </div>
+  <div class="py-card">
+   <div class="py-card-title">Mission 3: Variables (変数)</div>
+   <pre><span class="kw">def</span> <span class="fn">add_bombs</span>():
+    p = window.game.player
+    p.bombs = p.bombs + <span class="num">5</span>
+    <span class="cm"># Adds 5 bombs to inventory</span></pre>
+  </div>
+  <div class="py-card">
+   <div class="py-card-title">Mission 4: Return & Math</div>
+   <pre><span class="kw">def</span> <span class="fn">mega_score</span>():
+    old = window.game.getScore()
+    new_score = old + <span class="num">500</span>
+    window.game.setScore(new_score)</pre>
+  </div>
+ </div>
+</div>
 </div>
 
 <script>
@@ -89,7 +153,8 @@ let messageTimer=0;
 
 function newPlayer(){
  return {
-  x:130,y:FLOOR-48,vx:0,vy:0,w:30,h:46,
+  // [BUG FIX 1] Changed y:FLOOR-48 to y:FLOOR so Kyoma stands on the ground on the title screen
+  x:130,y:FLOOR,vx:0,vy:0,w:30,h:46,
   hp:100,maxHp:100,weapon:0,ammo:weapons.map(w=>w.ammo),
   bombs:3,shootCd:0,bombCd:0,special:100,
   inv:0,facing:1,ground:true,anim:0
@@ -164,6 +229,7 @@ function drawBackground(){
  rect(0,FLOOR,W,8,s.accent);
  for(let i=0;i<22;i++){
   let x=(i*60-world*.8)%W;
+  if(x<0)x+=W;
   rect(x,FLOOR+32,30,3,"rgba(255,255,255,.13)");
   rect(x+18,FLOOR+76,25,3,"rgba(255,255,255,.1)");
  }
@@ -171,6 +237,7 @@ function drawBackground(){
  if(stage===3){
   for(let i=0;i<6;i++){
    let x=(i*190-world*.4)%W;
+   if(x<0)x+=W;
    rect(x,FLOOR-18,90,18,"#a83c25");
    rect(x+20,FLOOR-25,50,7,"#ffb24b");
   }
@@ -288,7 +355,8 @@ function drawHUD(){
 function newEnemy(){
  const type=Math.floor(Math.random()*3);
  enemies.push({
-  x:world+W+35,y:FLOOR,
+  // [BUG FIX 2A] Removed world+ so enemies spawn at the right edge of the 960px screen
+  x:W+35,y:FLOOR,
   hp:type===2?55:35,maxHp:type===2?55:35,
   speed:1+Math.random()*.7+stage*.12,
   type,dir:-1,shoot:80+Math.random()*100,
@@ -299,7 +367,8 @@ function newEnemy(){
 function spawnBoss(){
  bossSpawned=true;
  boss={
-  x:world+W-100,y:FLOOR,
+  // [BUG FIX 2B] Removed world+ so Boss spawns inside the arena
+  x:W-100,y:FLOOR,
   hp:350+stage*100,maxHp:350+stage*100,
   speed:1.3+stage*.12,dir:-1,
   shoot:80,attack:0,boss:true,type:3
@@ -313,7 +382,7 @@ function spawnBoss(){
 function dropItem(x,y){
  if(Math.random()<.75){
   items.push({
-   x,y:FLOOR-25,
+   x:clamp(x,60,480),y:FLOOR-25,
    type:Math.random()<.42?"bomb":"weapon",
    weapon:Math.floor(Math.random()*5)
   });
@@ -459,7 +528,8 @@ function updateEnemies(dt){
   const dist=Math.abs(dx);
   if(e.boss){
    e.x+=e.dir*e.speed*dt;
-   e.x=clamp(e.x,world+300,world+W-80);
+   // [BUG FIX 2C] Removed world+ so Boss stays on screen
+   e.x=clamp(e.x,300,W-80);
    e.shoot-=dt;
    if(e.shoot<=0){
     e.shoot=65-stage*4;
@@ -482,6 +552,26 @@ function updateEnemies(dt){
  enemies=enemies.filter(e=>e.hp>0);
 }
 
+function handleEnemyDefeat(e){
+ score+=e.boss?1000:100;kills+=e.boss?5:1;
+ burst(e.x,e.y-35,e.boss?"#d58aff":"#ff9a55",e.boss?55:18);
+ if(e.boss){
+  bossSpawned=false;
+  status.textContent="BOSS DEFEATED!";
+  stage++;
+  if(stage>=stages.length){
+   gameState="win";status.textContent="YOU ARE THE CHAMPION! FINAL SCORE: "+score;
+  }else{
+   gameTime=0;
+   status.textContent="STAGE "+(stage+1)+": "+stages[stage].name;
+   world+=W;
+   player.hp=Math.min(100,player.hp+35);
+   player.special=100;
+   dropItem(player.x+100,FLOOR);
+  }
+ }else if(Math.random()<.25)dropItem(e.x,FLOOR);
+}
+
 function updateBullets(dt){
  for(const b of bullets){
   b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;
@@ -490,30 +580,13 @@ function updateBullets(dt){
    if(Math.abs(b.x-e.x)<(e.boss?60:22)&&Math.abs(b.y-(e.y-40))<(e.boss?75:50)){
     e.hp-=b.damage;b.life=0;
     burst(b.x,b.y,b.color,5);
-    if(e.hp<=0){
-     score+=e.boss?1000:100;kills+=e.boss?5:1;
-     burst(e.x,e.y-35,e.boss?"#d58aff":"#ff9a55",e.boss?55:18);
-     if(e.boss){
-      bossSpawned=false;
-      status.textContent="BOSS DEFEATED!";
-      stage++;
-      if(stage>=stages.length){
-       gameState="win";status.textContent="YOU ARE THE CHAMPION! FINAL SCORE: "+score;
-      }else{
-       gameTime=0;
-       status.textContent="STAGE "+(stage+1)+": "+stages[stage].name;
-       world+=W;
-       player.hp=Math.min(100,player.hp+35);
-       player.special=100;
-       dropItem(player.x+100,FLOOR);
-      }
-     }else if(Math.random()<.25)dropItem(e.x,FLOOR);
-    }
+    if(e.hp<=0)handleEnemyDefeat(e);
     break;
    }
   }
  }
- bullets=bullets.filter(b=>b.life>0&&b.x>world-50&&b.x<world+W+100);
+ // [BUG FIX 2D] Removed world+ from bullet boundary check
+ bullets=bullets.filter(b=>b.life>0&&b.x>-50&&b.x<W+100);
 }
 
 function updateEnemyBullets(dt){
@@ -523,7 +596,7 @@ function updateEnemyBullets(dt){
    hurtPlayer(b.damage);b.life=0;
   }
  }
- enemyBullets=enemyBullets.filter(b=>b.life!==0&&b.x>world-50&&b.x<world+W+100);
+ enemyBullets=enemyBullets.filter(b=>b.life!==0&&b.x>-50&&b.x<W+100);
 }
 
 function updateBombs(dt){
@@ -536,7 +609,10 @@ function updateBombs(dt){
    burst(b.x,b.y,"#ff9d48",45);
    shake=13;sound(65,.4,"sawtooth");
    for(const e of enemies){
-    if(Math.hypot(e.x-b.x,(e.y-40)-b.y)<115)e.hp-=100;
+    if(e.hp>0&&Math.hypot(e.x-b.x,(e.y-40)-b.y)<115){
+     e.hp-=100;
+     if(e.hp<=0)handleEnemyDefeat(e);
+    }
    }
    if(Math.hypot(player.x-b.x,player.y-35-b.y)<100)hurtPlayer(15);
    b.life=0;
@@ -550,14 +626,15 @@ function updateItems(dt){
  if(itemTimer<=0){
   if(items.length<3){
    items.push({
-    x:world+650+Math.random()*250,y:FLOOR-25,
+    // [BUG FIX 2E] Spawn items within Kyoma's reachable area (100 to 480)
+    x:100+Math.random()*380,y:FLOOR-25,
     type:Math.random()<.45?"bomb":"weapon",
     weapon:Math.floor(Math.random()*5)
    });
   }
   itemTimer=360;
  }
- items=items.filter(it=>it.x>world-100);
+ items=items.filter(it=>it.x>-100);
 }
 
 function updateParticles(dt){
@@ -661,8 +738,20 @@ function loop(t){
  const dt=Math.min((t-last)/16.667||1,2.5);
  last=t;
  updateGamepad();
+ // [BUG FIX 3] Check pressed.pause so Escape/Enter/Controller Options pauses the game
+ if(pressed.pause&&gameState==="playing"){
+  paused=!paused;
+  status.textContent=paused?"PAUSED":"FIGHT ON!";
+ }
  update(dt);
  render();
+ // [TEACHER SETUP 3] Expose game objects so Kyoma's Python script can control them
+ window.game={
+  player,weapons,stages,enemies,items,
+  getScore:()=>score,setScore:v=>{score=v;},
+  getLives:()=>lives,setLives:v=>{lives=v;},
+  spawnBoss,burst,sound
+ };
  pressed={};
  requestAnimationFrame(loop);
 }
@@ -709,6 +798,70 @@ window.addEventListener("gamepaddisconnected",()=>{
 
 requestAnimationFrame(loop);
 })();
+</script>
+
+<!-- ========================================================= -->
+<!-- KYOMA'S PYTHON CODING ZONE (Write real Python below!)     -->
+<!-- ========================================================= -->
+<script type="text/python">
+from browser import document, window
+
+# 1. Function (関数) + Variables (変数) + If/Else: Heal Kyoma when pressing 'H'
+def heal_kyoma(event=None):
+    p = window.game.player
+    if p.hp < p.maxHp:
+        p.hp = 100
+        window.game.burst(p.x, p.y - 35, "#4bda83", 25)
+        window.game.sound(650, 0.15)
+        document["status"].textContent = "🐍 PYTHON HEAL: HP IS NOW 100!"
+    else:
+        window.game.sound(220, 0.08)
+        document["status"].textContent = "🐍 PYTHON SAYS: HP IS ALREADY FULL!"
+
+# 2. Function to upgrade Pistol when pressing 'U'
+def upgrade_pistol(event=None):
+    pistol = window.game.weapons[0]
+    pistol.name = "PYTHON LASER PISTOL"
+    pistol.damage = 45
+    pistol.rate = 6
+    pistol.color = "#80e39b"
+    window.game.sound(880, 0.2)
+    document["status"].textContent = "🐍 PYTHON UPGRADE: SUPER PISTOL UNLOCKED!"
+
+# 3. Function to add 5 bombs when pressing 'B'
+def add_bombs(event=None):
+    p = window.game.player
+    p.bombs = p.bombs + 5
+    window.game.sound(520, 0.12)
+    document["status"].textContent = "🐍 PYTHON BOMBS: +5 BOMBS ADDED!"
+
+# 4. Function to add 500 bonus points when pressing 'M'
+def mega_score(event=None):
+    current_score = window.game.getScore()
+    new_score = current_score + 500
+    window.game.setScore(new_score)
+    window.game.sound(750, 0.15)
+    document["status"].textContent = "🐍 PYTHON BONUS: SCORE IS NOW " + str(new_score)
+
+# Listen for keyboard presses in Python
+def check_python_keys(event):
+    key = event.key.lower()
+    if key == "h":
+        heal_kyoma()
+    elif key == "u":
+        upgrade_pistol()
+    elif key == "b":
+        add_bombs()
+    elif key == "m":
+        mega_score()
+
+document.bind("keydown", check_python_keys)
+
+# Also connect the on-screen Python Lab buttons!
+document["py-heal-btn"].bind("click", heal_kyoma)
+document["py-upgrade-btn"].bind("click", upgrade_pistol)
+document["py-bomb-btn"].bind("click", add_bombs)
+document["py-score-btn"].bind("click", mega_score)
 </script>
 </body>
 </html>
